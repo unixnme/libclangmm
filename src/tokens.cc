@@ -49,7 +49,7 @@ clangmm::Tokens::Tokens(CXTranslationUnit &cx_tu, const SourceRange &range, bool
     };
     VisitorData data{this, range.get_start().get_path(), invalid_tokens, {}};
     auto translation_unit_cursor = clang_getTranslationUnitCursor(cx_tu);
-    clang_visitChildren(translation_unit_cursor, [](CXCursor cx_cursor, CXCursor cx_parent, CXClientData data_) {
+    clang_visitChildren(translation_unit_cursor, [](CXCursor cx_cursor, CXCursor /*cx_parent*/, CXClientData data_) {
       auto data = static_cast<VisitorData *>(data_);
       Cursor cursor(cx_cursor);
       if(cursor.get_source_location().get_path() == data->path)
@@ -58,7 +58,7 @@ clangmm::Tokens::Tokens(CXTranslationUnit &cx_tu, const SourceRange &range, bool
     }, &data);
 
     for(auto &cursor : data.cursors) {
-      clang_visitChildren(cursor.cx_cursor, [](CXCursor cx_cursor, CXCursor cx_parent, CXClientData data_) {
+      clang_visitChildren(cursor.cx_cursor, [](CXCursor cx_cursor, CXCursor /*cx_parent*/, CXClientData data_) {
         auto data = static_cast<VisitorData *>(data_);
         if(clang_getCursorKind(cx_cursor) == CXCursor_FieldDecl) {
           Cursor cursor(cx_cursor);

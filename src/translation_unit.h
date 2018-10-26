@@ -13,25 +13,18 @@
 
 namespace clangmm {
   class TranslationUnit {
+    std::shared_ptr<Index> index;
+
   public:
-    TranslationUnit(Index &index, const std::string &file_path,
+    TranslationUnit(std::shared_ptr<Index> index_, const std::string &file_path,
                     const std::vector<std::string> &command_line_args,
-                    const std::string &buffer,
-                    int flags = DefaultFlags());
-    TranslationUnit(Index &index, const std::string &file_path,
-                    const std::vector<std::string> &command_line_args,
+                    const std::string *buffer = nullptr,
                     int flags = DefaultFlags());
     ~TranslationUnit();
 
     int reparse(const std::string &buffer, int flags = DefaultFlags());
 
     static int DefaultFlags();
-
-    void parse(Index &index,
-               const std::string &file_path,
-               const std::vector<std::string> &command_line_args,
-               const std::map<std::string, std::string> &buffers,
-               int flags = DefaultFlags());
 
     CodeCompleteResults get_code_completions(const std::string &buffer,
                                              unsigned line_number, unsigned column);

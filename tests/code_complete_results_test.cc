@@ -17,7 +17,7 @@ int main() {
     arguments.emplace_back("-I/usr/lib64/clang/" + clang_version + "/include"); // For Fedora
   }
 
-  clangmm::Index index(0, 0);
+  auto index = std::make_shared<clangmm::Index>(0, 0);
   clangmm::TranslationUnit tu(index, path, arguments);
 
   std::string buffer = "#include <string>\n"

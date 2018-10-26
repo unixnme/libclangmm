@@ -5,66 +5,34 @@
 #include <fstream>
 #include <sstream>
 
-#include <iostream>  //TODO: remove
-using namespace std; //TODO: remove
-
-clangmm::TranslationUnit::TranslationUnit(Index &index, const std::string &file_path,
+clangmm::TranslationUnit::TranslationUnit(std::shared_ptr<Index> index_, const std::string &file_path,
                                           const std::vector<std::string> &command_line_args,
-                                          const std::string &buffer, int flags) {
+                                          const std::string *buffer, int flags) : index(std::move(index_)) {
   std::vector<const char *> args;
   for(auto &a : command_line_args) {
     args.push_back(a.c_str());
   }
 
-  CXUnsavedFile files[1];
-  files[0].Filename = file_path.c_str();
-  files[0].Contents = buffer.c_str();
-  files[0].Length = buffer.size();
-
-  cx_tu = clang_parseTranslationUnit(index.cx_index, file_path.c_str(), args.data(),
-                                     args.size(), files, 1, flags);
-}
-
-clangmm::TranslationUnit::TranslationUnit(Index &index, const std::string &file_path,
-                                          const std::vector<std::string> &command_line_args,
-                                          int flags) {
-  std::vector<const char *> args;
-  for(auto &a : command_line_args) {
-    args.push_back(a.c_str());
+  std::vector<CXUnsavedFile> files;
+  if(buffer) {
+    files.emplace_back();
+    files.back().Filename = file_path.c_str();
+    files.back().Contents = buffer->c_str();
+    files.back().Length = buffer->size();
   }
 
-  cx_tu = clang_parseTranslationUnit(index.cx_index, file_path.c_str(), args.data(),
-                                     args.size(), NULL, 0, flags);
+  cx_tu = clang_parseTranslationUnit(index->cx_index, file_path.c_str(), args.data(),
+                                     args.size(), files.empty() ? nullptr : files.data(), files.size(), flags);
 }
 
 clangmm::TranslationUnit::~TranslationUnit() {
   clang_disposeTranslationUnit(cx_tu);
 }
 
-void clangmm::TranslationUnit::parse(Index &index, const std::string &file_path,
-                                     const std::vector<std::string> &command_line_args,
-                                     const std::map<std::string, std::string> &buffers, int flags) {
-  std::vector<CXUnsavedFile> files;
-  for(auto &buffer : buffers) {
-    CXUnsavedFile file;
-    file.Filename = buffer.first.c_str();
-    file.Contents = buffer.second.c_str();
-    file.Length = buffer.second.size();
-    files.push_back(file);
-  }
-  std::vector<const char *> args;
-  for(auto &a : command_line_args) {
-    args.push_back(a.c_str());
-  }
-  cx_tu = clang_parseTranslationUnit(index.cx_index, file_path.c_str(), args.data(),
-                                     args.size(), files.data(), files.size(), flags);
-}
-
 int clangmm::TranslationUnit::reparse(const std::string &buffer, int flags) {
-  CXUnsavedFile files[1];
-
   auto file_path = to_string(clang_getTranslationUnitSpelling(cx_tu));
 
+  CXUnsavedFile files[1];
   files[0].Filename = file_path.c_str();
   files[0].Contents = buffer.c_str();
   files[0].Length = buffer.size();
