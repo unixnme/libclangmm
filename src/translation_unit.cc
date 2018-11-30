@@ -93,6 +93,10 @@ std::unique_ptr<clangmm::Tokens> clangmm::TranslationUnit::get_tokens(unsigned s
   return std::unique_ptr<Tokens>(new Tokens(cx_tu, range));
 }
 
+clangmm::Cursor clangmm::TranslationUnit::get_cursor() {
+  return Cursor(clang_getTranslationUnitCursor(cx_tu));
+}
+
 clangmm::Cursor clangmm::TranslationUnit::get_cursor(const std::string &path, unsigned offset) {
   SourceLocation location(cx_tu, path, offset);
   return Cursor(clang_getCursor(cx_tu, location.cx_location));

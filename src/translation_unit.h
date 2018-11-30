@@ -37,6 +37,7 @@ namespace clangmm {
     std::unique_ptr<Tokens> get_tokens(unsigned start_line, unsigned start_column,
                                        unsigned end_line, unsigned end_column);
 
+    Cursor get_cursor();
     Cursor get_cursor(const std::string &path, unsigned offset);
     Cursor get_cursor(const std::string &path, unsigned line, unsigned column);
     Cursor get_cursor(const SourceLocation &location);
