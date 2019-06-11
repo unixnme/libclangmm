@@ -1,6 +1,6 @@
 add_definitions(-DLIBCLANGMM_TESTS_PATH="${CMAKE_CURRENT_SOURCE_DIR}")
 
-add_executable(code_complete_results_test code_complete_results_test.cc)
+add_executable(code_complete_results_test code_complete_results_test.cc tokens_test.cc)
 target_link_libraries(code_complete_results_test clangmm)
 add_test(code_complete_results_test code_complete_results_test)
 
@@ -27,3 +27,7 @@ add_test(token_test token_test)
 add_executable(translation_unit_test translation_unit_test.cc)
 target_link_libraries(translation_unit_test clangmm)
 add_test(translation_unit_test translation_unit_test)
+
+add_executable(tokens_test tokens_test.cc)
+target_link_libraries(tokens_test clangmm)
+add_test(tokens_test token_test)

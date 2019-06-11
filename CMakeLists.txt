@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project(clangmm)
 
-add_compile_options(-std=c++11 -Wall -Wextra)
+add_compile_options(-std=c++11 -Wall -Wextra -O0)
 
 if(APPLE)
   set(CMAKE_MACOSX_RPATH 1)
