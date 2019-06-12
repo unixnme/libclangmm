@@ -17,7 +17,7 @@ find_package(LibClang REQUIRED)
 
 add_subdirectory(src)
 
-option(BUILD_TESTING OFF)
+option(BUILD_TESTING ON)
 
 if(${NOT_SUB_PROJECT})
   set(BUILD_TESTING ON)
